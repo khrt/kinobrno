@@ -1,7 +1,4 @@
-
-//import 'whatwg-fetch';
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
+import 'whatwg-fetch';
 
 function handleError(res) {
   console.log('fetch failed:' + res);
@@ -9,6 +6,8 @@ function handleError(res) {
 }
 
 function handleResponse(res) {
+  console.log(res);
+
   if (res.status >= 200 && res.status < 300) {
     return res.json();
   } else {
@@ -16,15 +15,7 @@ function handleResponse(res) {
   }
 }
 
-function parseCinemaCity(data) {
-  let shownLocations = Array('Olympia', 'Velký Špalíček');
-
-  for (let i of data.sites) {
-    if (shownLocations.indexOf(i.sn) == -1) { continue; }
-
-    console.log(i);
-  }
-}
+// ('Olympia', 'Velký Špalíček');
 
 const CINEMACITY_LOCATIONS = {
   Olympia: 1010103,
@@ -81,11 +72,11 @@ class Movie {
   }
 }
 
-class CinemaCity {
+export default class CinemaCity {
   constructor(props = {}) {
-    if (  !props.hasOwnProperty('location')
-        && props.location
-        && CINEMACITY_LOCATIONS[props.location])
+    if (   !props.hasOwnProperty('location')
+        || !props.location
+        || !CINEMACITY_LOCATIONS[props.location])
     {
       throw { code: 'NO_LOCATION' };
     }
@@ -100,8 +91,8 @@ class CinemaCity {
   }
 
   movies(location) {
-    let url = `http://www.cinemacity.cz/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`
-
+    //let url = `http://www.cinemacity.cz/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`;
+    let url = `http://localhost:9292/proxy/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`;
     return fetch(url)
       .then(handleResponse)
       .then((data) => {
@@ -115,12 +106,14 @@ class CinemaCity {
   }
 }
 
-new CinemaCity({ location: 'Olympia' })
-  .movies()
-  .then(function(movies) {
-    showtime = movies[0].showtime();
-    console.log(showtime[0].date() + ' ' + showtime[0].time());
-  })
-  .catch(function(ex) {
-    console.error(ex);
-  });
+//new CinemaCity({ location: 'Olympia' })
+//  .movies()
+//  .then(function(movies) {
+//    showtime = movies[0].showtime();
+//    console.log(showtime[0].date() + ' ' + showtime[0].time());
+//
+//    console.log(movies.map(m => m.title()));
+//  })
+//  .catch(function(ex) {
+//    console.error(ex);
+//  });
