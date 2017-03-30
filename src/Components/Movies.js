@@ -1,6 +1,8 @@
 import React from 'react';
+import { Route, Link } from 'react-router-dom';
 
-import CinemaCity from '../model.js';
+import Showtimes from './Showtimes';
+import { fetchMovies } from '../util';
 
 export default class Movies extends React.Component {
   constructor(props) {
@@ -8,29 +10,49 @@ export default class Movies extends React.Component {
 
     this.state = {
       movies: [],
+      multiplex: '',
     };
   }
 
   componentDidMount() {
-    new CinemaCity({ location: this.props.params.multiplex })
-      .movies()
+    fetchMovies(this.props.match.params.multiplex)
       .then(data => {
-        this.setState({ movies: data })
+        this.setState({
+          movies: data.fe,
+          multiplex: data.sn,
+        })
+      });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    fetchMovies(nextProps.match.params.multiplex)
+      .then(data => {
+        this.setState({
+          movies: data.fe,
+          multiplex: data.sn,
+        })
       });
   }
 
   render() {
+    //<img src={`http://media1.cinema-city.pl/cz/Feats/med/${m.dc}.jpg`} alt={m.fn}/>
     return (
       <div>
-        <h1>Movies at {this.props.params.multiplex}</h1>
+        <h1>Movies at {this.state.multiplex}</h1>
 
-        <nav id="movies">
+        <ul role="navigation" id="movies">
           {
-            this.state.movies.map(x => <div key={ x.title() }>{ x.title() }</div>)
+            this.state.movies.map(m => (
+              <li key={m.fn}>
+                <Link to={`${this.props.match.url}/${m.fn}`}>
+                  {m.fn}
+                </Link>
+              </li>
+            ))
           }
-        </nav>
+        </ul>
 
-        {this.props.children}
+        <Route path={`/:multiplex/:movie`} component={Showtimes}/>
       </div>
     );
   }

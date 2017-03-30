@@ -6,8 +6,6 @@ function handleError(res) {
 }
 
 function handleResponse(res) {
-  console.log(res);
-
   if (res.status >= 200 && res.status < 300) {
     return res.json();
   } else {
@@ -92,7 +90,8 @@ export default class CinemaCity {
 
   movies(location) {
     //let url = `http://www.cinemacity.cz/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`;
-    let url = `http://localhost:9292/proxy/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`;
+    //let url = `http://localhost:9292/proxy/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`;
+    let url = `https://damp-journey-66295.herokuapp.com/proxy/${this.props.lang}/presentationsJSON?subSiteId=${this.props.location.id}&showExpired=false`;
     return fetch(url)
       .then(handleResponse)
       .then((data) => {

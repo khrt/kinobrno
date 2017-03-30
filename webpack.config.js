@@ -1,4 +1,5 @@
-var webpack = require('webpack')
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+var path = require('path');
 
 module.exports = {
   entry: ['whatwg-fetch', './src/index.js'],
@@ -14,5 +15,10 @@ module.exports = {
         exclude: /node-modules/
       }
     ]
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: 'src/index.html' }
+    ])
+  ]
 };

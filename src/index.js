@@ -1,6 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
 
-import AppRouter from './routes';
+import Multiplexes from './Components/Multiplexes';
 
-ReactDOM.render(<AppRouter/>, document.getElementById('app'));
+const App = () => (
+  <Router>
+    <Multiplexes/>
+  </Router>
+);
+
+ReactDOM.render(<App/>, document.getElementById('app'));
